@@ -36,7 +36,7 @@ function EnhancerBox({ user, userData, onCoinUpdate }) {
     formData.append('image', selectedFile);
 
     try {
-      const res = await axios.post('http://127.0.0.1:5000/upload', formData, {
+      const res = await axios.post('https://ricoputra1708-image-enhancer.hf.space/upload', formData, {
         responseType: 'blob',
       });
       const imageURL = URL.createObjectURL(res.data);
