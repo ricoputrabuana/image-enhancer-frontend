@@ -60,7 +60,7 @@ function EnhancerBox({ user, userData, onCoinUpdate }) {
 
       } catch (err) {
         alert('Enhance failed');
-        console.error(err);
+        console.error('Enhance failed:', err?.response || err.message || err);
       }
     };
   };
