@@ -19,48 +19,48 @@ function EnhancerBox({ user, userData, onCoinUpdate }) {
     }
   };
 
-  const handleEnhance = async () => {
-    if (!user) {
-      navigate('/login');
-      return;
-    }
+const handleEnhance = async () => {
+  if (!user) {
+    navigate('/login');
+    return;
+  }
 
-    if (userData?.coins <= 0) {
-      alert('Koin kamu habis. Silakan isi ulang.');
-      return;
-    }
+  if (userData?.coins <= 0) {
+    alert('Koin kamu habis. Silakan isi ulang.');
+    return;
+  }
 
-    if (!selectedFile) return;
+  if (!selectedFile) return;
 
-    const formData = new FormData();
-    formData.append("data", selectedFile);
+  const formData = new FormData();
+  formData.append("data", selectedFile); // ⬅️ field 'data' WAJIB
 
-      try {
-        const res = await axios.post(
-          'https://ricoputra1708-image-enhancer.hf.space/',
-          {
-            data: [base64Image],
-          },
-          {
-            headers: { 'Content-Type': 'application/json' },
-          }
-        );
-
-        const resultBase64 = res.data.data[0];
-        setEnhanced(resultBase64);
-
-        // 🔁 Update coins di Firestore
-        const newCoins = userData.coins - 1;
-        const userRef = doc(db, 'users', user.uid);
-        await updateDoc(userRef, { coins: newCoins });
-        onCoinUpdate(newCoins);
-
-      } catch (err) {
-        alert('Enhance failed');
-        console.error('Enhance failed:', err?.response || err.message || err);
+  try {
+    const res = await axios.post(
+      'https://ricoputra1708-image-enhancer.hf.space/', // endpoint root
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
       }
-    };
-  };
+    );
+
+    const resultBase64 = res.data.data[0]; // Gradio response in base64
+    setEnhanced(resultBase64);
+
+    // 🔁 Update koin
+    const newCoins = userData.coins - 1;
+    const userRef = doc(db, 'users', user.uid);
+    await updateDoc(userRef, { coins: newCoins });
+    onCoinUpdate(newCoins);
+
+  } catch (err) {
+    alert('Enhance failed');
+    console.error('Enhance failed:', err?.response || err.message || err);
+  }
+};
+
 
   const handleRemove = () => {
     setSelectedFile(null);
