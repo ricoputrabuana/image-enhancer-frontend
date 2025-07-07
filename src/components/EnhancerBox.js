@@ -32,10 +32,8 @@ function EnhancerBox({ user, userData, onCoinUpdate }) {
 
     if (!selectedFile) return;
 
-    const reader = new FileReader();
-    reader.readAsDataURL(selectedFile);
-    reader.onloadend = async () => {
-      const base64Image = reader.result;
+    const formData = new FormData();
+    formData.append("data", selectedFile);
 
       try {
         const res = await axios.post(
