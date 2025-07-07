@@ -32,28 +32,37 @@ function EnhancerBox({ user, userData, onCoinUpdate }) {
 
     if (!selectedFile) return;
 
-    const formData = new FormData();
-    formData.append('image', selectedFile);
+    const reader = new FileReader();
+    reader.readAsDataURL(selectedFile);
+    reader.onloadend = async () => {
+      const base64Image = reader.result;
 
-    try {
-      const res = await axios.post('https://ricoputra1708-image-enhancer.hf.space/run/predict', formData, {
-        responseType: 'blob',
-      });
-      const imageURL = URL.createObjectURL(res.data);
-      setEnhanced(imageURL);
+      try {
+        const res = await axios.post(
+          'https://ricoputra1708-image-enhancer.hf.space/run/predict',
+          {
+            data: [base64Image],
+            fn_index: 0, // default if only 1 function in Gradio
+          },
+          {
+            headers: { 'Content-Type': 'application/json' },
+          }
+        );
 
-      // 🔁 Kurangi koin di Firestore
-      const newCoins = userData.coins - 1;
-      const userRef = doc(db, 'users', user.uid);
-      await updateDoc(userRef, { coins: newCoins });
+        const resultBase64 = res.data.data[0];
+        setEnhanced(resultBase64);
 
-      // 🔁 Update state frontend
-      onCoinUpdate(newCoins);
+        // 🔁 Update coins di Firestore
+        const newCoins = userData.coins - 1;
+        const userRef = doc(db, 'users', user.uid);
+        await updateDoc(userRef, { coins: newCoins });
+        onCoinUpdate(newCoins);
 
-    } catch (err) {
-      alert('Enhance failed');
-      console.error(err);
-    }
+      } catch (err) {
+        alert('Enhance failed');
+        console.error(err);
+      }
+    };
   };
 
   const handleRemove = () => {
@@ -89,11 +98,16 @@ function EnhancerBox({ user, userData, onCoinUpdate }) {
             <div className="action-buttons">
               <button onClick={handleRemove}>Remove</button>
               <button onClick={handleEnhance}>
-                Enhance 1{''}
+                Enhance 1{' '}
                 <img
                   src="/assets/coin.png"
                   alt="coin"
-                  style={{ width: '16px', height: '16px', verticalAlign: 'middle',}}
+                  style={{
+                    width: '16px',
+                    height: '16px',
+                    verticalAlign: 'middle',
+                    marginLeft: '4px'
+                  }}
                 />
               </button>
             </div>
