@@ -39,10 +39,9 @@ function EnhancerBox({ user, userData, onCoinUpdate }) {
 
       try {
         const res = await axios.post(
-          'https://ricoputra1708-image-enhancer.hf.space/run/predict',
+          'https://ricoputra1708-image-enhancer.hf.space/',
           {
             data: [base64Image],
-            fn_index: 0, // default if only 1 function in Gradio
           },
           {
             headers: { 'Content-Type': 'application/json' },
