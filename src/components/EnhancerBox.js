@@ -32,33 +32,38 @@ const handleEnhance = async () => {
 
   if (!selectedFile) return;
 
-  const formData = new FormData();
-  formData.append("data", selectedFile); // ⬅️ field 'data' WAJIB
+  const reader = new FileReader();
+  reader.readAsDataURL(selectedFile);
 
-  try {
-    const res = await axios.post(
-      'https://ricoputra1708-image-enhancer.hf.space/', // endpoint root
-      formData,
-      {
-        headers: {
-          'Content-Type': 'multipart/form-data',
+  reader.onloadend = async () => {
+    const base64Image = reader.result;
+
+    try {
+      const res = await axios.post(
+        'https://ricoputra1708-image-enhancer.hf.space/run/predict',
+        {
+          data: [base64Image],
+          fn_index: 0
         },
-      }
-    );
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
 
-    const resultBase64 = res.data.data[0]; // Gradio response in base64
-    setEnhanced(resultBase64);
+      const resultBase64 = res.data.data[0];
+      setEnhanced(resultBase64);
 
-    // 🔁 Update koin
-    const newCoins = userData.coins - 1;
-    const userRef = doc(db, 'users', user.uid);
-    await updateDoc(userRef, { coins: newCoins });
-    onCoinUpdate(newCoins);
-
-  } catch (err) {
-    alert('Enhance failed');
-    console.error('Enhance failed:', err?.response || err.message || err);
-  }
+      const newCoins = userData.coins - 1;
+      const userRef = doc(db, 'users', user.uid);
+      await updateDoc(userRef, { coins: newCoins });
+      onCoinUpdate(newCoins);
+    } catch (err) {
+      alert('Enhance failed');
+      console.error('Enhance failed:', err?.response || err.message || err);
+    }
+  };
 };
 
 
