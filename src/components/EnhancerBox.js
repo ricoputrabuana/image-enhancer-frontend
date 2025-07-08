@@ -40,7 +40,7 @@ const handleEnhance = async () => {
 
     try {
       const res = await axios.post(
-        'https://ricoputra1708-image-enhancer.hf.space/predict/',
+        'https://ricoputra1708-image-enhancer.hf.space/predict',
         {
           data: [base64Image]
         },
