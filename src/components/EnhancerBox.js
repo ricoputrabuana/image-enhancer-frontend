@@ -51,6 +51,8 @@ const handleEnhance = async () => {
         }
       );
 
+      console.log("[SUCCESS] Response from proxy:", res.data);
+
       const resultBase64 = res.data.data[0];
       setEnhanced(resultBase64);
 
