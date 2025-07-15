@@ -42,7 +42,7 @@ const handleEnhance = async () => {
       const res = await axios.post(
         'https://image-proxy-server-production.up.railway.app/proxy',
         {
-          data: [base64Image]
+          data: base64Image  // <-- string saja, tanpa array
         },
         {
           headers: {
