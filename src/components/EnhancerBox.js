@@ -40,7 +40,7 @@ const handleEnhance = async () => {
 
     try {
       const res = await axios.post(
-        'https://image-proxy-server-production.up.railway.app/proxy',
+        'https://ricoputra1708-image-enhancer.hf.space/',
         {
           data: base64Image  // <-- string saja, tanpa array
         },
