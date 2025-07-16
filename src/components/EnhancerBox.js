@@ -42,7 +42,7 @@ const handleEnhance = async () => {
       const res = await axios.post(
         'https://ricoputra1708-image-enhancer.hf.space/api/predict/',
         {
-          data: base64Image  // <-- string saja, tanpa array
+          data: [base64Image]
         },
         {
           headers: {
