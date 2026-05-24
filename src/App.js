@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { auth, db } from './firebase';
+import { onAuthStateChanged } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 import Header from './components/Header';
 import LoginPage from './pages/LoginPage';
@@ -21,17 +22,43 @@ function App() {
   };
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      if (user) {
-        const ref = doc(db, 'users', user.uid);
-        const snap = await getDoc(ref);
-        if (snap.exists()) {
-          setUserData(snap.data());
+  
+    const unsubscribe =
+      onAuthStateChanged(auth, async(currentUser)=>{
+  
+        if(currentUser){
+  
+          setUser(currentUser);
+  
+          const ref = doc(db,'users',currentUser.uid);
+          const snap = await getDoc(ref);
+  
+          if(snap.exists()){
+  
+            setUserData(snap.data());
+  
+          }else{
+  
+            setUserData({
+              name: currentUser.displayName,
+              email: currentUser.email,
+              coins:0
+            });
+  
+          }
+  
+        }else{
+  
+          setUser(null);
+          setUserData(null);
+  
         }
-      }
-    };
-    fetchUserData();
-  }, [user]);
+  
+      });
+  
+    return () => unsubscribe();
+  
+  },[]);
 
   return (
     <Router>
