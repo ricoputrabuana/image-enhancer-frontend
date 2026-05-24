@@ -85,7 +85,6 @@ function App() {
       </div>
     </Router>
   );
-console.log("API KEY:", process.env.REACT_APP_API_KEY);
 }
 
 export default App;
