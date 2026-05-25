@@ -73,7 +73,11 @@ function Header({ userData, onLogout }) {
                   setMenuOpen(!menuOpen)
                 }
               >
-                👤 ▼
+                <img
+                  src="/assets/user.png"
+                  alt="profile"
+                  className="profile-icon"
+                /> ▼
               </button>
 
               {menuOpen && (
@@ -120,7 +124,11 @@ function Header({ userData, onLogout }) {
               onClick={onLogout}
               className="logout-btn"
             >
-              🚪
+              <img
+                src="/assets/logout.png"
+                alt="logout"
+                className="logout-icon"
+              />
             </button>
 
           </>
