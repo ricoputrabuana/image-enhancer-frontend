@@ -41,7 +41,7 @@
 .auth-links{
   display:flex;
   align-items:center;
-  gap:20px;
+  gap:14px;
 }
 
 /* ---------- COIN BOX ---------- */
@@ -50,19 +50,13 @@
   display:flex;
   align-items:center;
   justify-content:center;
-
   gap:8px;
-
   text-decoration:none;
   background:#f4f4f4;
-
   padding:8px 14px;
-
   border-radius:10px;
-
   color:#111;
   font-weight:600;
-
   transition:0.2s;
 }
 
@@ -74,22 +68,16 @@
   display:flex;
   align-items:center;
   justify-content:center;
-
   gap:4px;
-
   line-height:1;
 }
 
 .coin-icon{
   width:18px;
   height:18px;
-
   object-fit:contain;
-
   display:inline-flex;
-
   vertical-align:middle;
-
   margin-bottom:1px;
 }
 
@@ -97,16 +85,11 @@
   display:flex;
   align-items:center;
   justify-content:center;
-
   font-size:18px;
   font-weight:bold;
-
   color:#5EABD6;
-
   line-height:1;
 }
-
-/* ---------- PROFILE ---------- */
 
 .profile-wrapper{
   position:relative;
@@ -116,35 +99,24 @@
   display:flex;
   align-items:center;
   justify-content:center;
-
   gap:2px;
-
   border:none;
   background:none;
-
   cursor:pointer;
-
   padding:0;
-
-  height:34px;
+  height:30px;
 }
 
 .profile-dropdown{
   position:absolute;
   right:0;
   top:55px;
-
   width:260px;
-
   background:white;
-
   border-radius:12px;
-
   box-shadow:
     0 8px 20px rgba(0,0,0,0.12);
-
   padding:18px;
-
   z-index:1000;
 }
 
@@ -162,12 +134,9 @@
 
 .dropdown-item{
   margin-top:12px;
-
   display:flex;
   align-items:center;
-
   gap:2px;
-
   cursor:pointer;
 }
 
@@ -175,30 +144,21 @@
   color:#5EABD6;
 }
 
-/* ---------- LOGOUT ---------- */
-
 .logout-btn{
   display:flex;
   align-items:center;
   justify-content:center;
-
   border:none;
   background:none;
-
   cursor:pointer;
-
-  padding:0;
-
+  padding-left:18px;
   height:34px;
-
   transition:0.2s;
 }
 
 .logout-btn:hover{
   transform:scale(1.12);
 }
-
-/* ---------- LOGIN BUTTON ---------- */
 
 .auth-button{
   padding:8px 14px;
@@ -214,26 +174,20 @@ body{
   overflow-x:hidden;
 }
 
-/* ---------- ICONS ---------- */
 
 .profile-icon,
 .logout-icon{
   width:35px;
   height:35px;
-
   object-fit:contain;
-
   display:block;
 }
 
 .dropdown-arrow{
   font-size:13px;
-
   display:flex;
   align-items:center;
   justify-content:center;
-
   line-height:1;
-
   transform:translateY(1px);
 }
