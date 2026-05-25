@@ -77,7 +77,9 @@ function Header({ userData, onLogout }) {
                   src="/assets/account.png"
                   alt="profile"
                   className="profile-icon"
-                /> ▼
+                />
+                <span className="dropdown-arrow">
+                    ▼
               </button>
 
               {menuOpen && (
