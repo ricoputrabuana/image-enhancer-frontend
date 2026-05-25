@@ -79,7 +79,8 @@ function Header({ userData, onLogout }) {
                   className="profile-icon"
                 />
                 <span className="dropdown-arrow">
-                    ▼
+                  ▼
+                </span>
               </button>
 
               {menuOpen && (
