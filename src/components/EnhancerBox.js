@@ -139,7 +139,9 @@ const handleEnhance = async () => {
                     marginLeft: '4px'
                   }}
                 />
-              </button>
+              </>
+            )}
+          </button>
             </div>
           </div>
           <div className="divider"></div>
