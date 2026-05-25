@@ -97,21 +97,26 @@ function Header({ userData, onLogout }) {
 
                   <hr />
 
-                  <div className="dropdown-item">
-
-                    Coins :
-                    {' '}
-                    {userData.coins}
-
+                  <div className="dropdown-item no-hover">
+                  
+                    <span>Coins: {userData.coins}</span>
+                  
                     <img
                       src="/assets/coin.png"
                       alt="coin"
-                      className="coin-icon"
+                      className="dropdown-coin-icon"
                     />
-
+                  
+                    <Link
+                      to="/buy-coins"
+                      className="dropdown-plus"
+                    >
+                      +
+                    </Link>
+                  
                   </div>
-
-                  <div className="dropdown-item">
+                  
+                  <div className="dropdown-item history-link">
                     History Images
                   </div>
 
