@@ -81,18 +81,22 @@ const handleEnhance = async () => {
 
     alert("Enhance failed");
   }
+  finally {
+
+  setIsLoading(false);
+  }
 };
 
 
   const handleRemove = () => {
     setSelectedFile(null);
     setPreview(null);
-    setEnhanced(null);
+    setd(null);
   };
 
   return (
-    <div className="enhancer-box">
-      <h3 className="title">Enhance Image Quality</h3>
+    <div className="r-box">
+      <h3 className="title"> Image Quality</h3>
 
       {!preview ? (
         <div className="center-upload-area">
@@ -111,13 +115,20 @@ const handleEnhance = async () => {
           </button>
         </div>
       ) : (
-        <div className="enhancer-content show-divider">
+        <div className="r-content show-divider">
           <div className="input-section">
             <img src={preview} alt="Preview" className="preview-img" />
             <div className="action-buttons">
               <button onClick={handleRemove}>Remove</button>
-              <button onClick={handleEnhance}>
-                Enhance 1{' '}
+              <button 
+                onClick={handle}
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  'Enhancing...'
+                ) : (
+                  <>
+                    Enhance 1{' '}
                 <img
                   src="/assets/coin.png"
                   alt="coin"
