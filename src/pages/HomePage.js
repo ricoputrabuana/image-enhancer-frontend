@@ -48,6 +48,23 @@ function HomePage({ user, userData, setUserData }) {
           setUserData(prev => ({ ...prev, coins: newCoins }));
         }}
       />
+      <div style={{ marginTop: '30px' }}>
+        <h3>Beli Koin</h3>
+        <button
+          onClick={handleTopup}
+          style={{
+            padding: '12px 24px',
+            backgroundColor: '#00aaff',
+            color: 'white',
+            fontWeight: 'bold',
+            borderRadius: '8px',
+            border: 'none',
+            cursor: 'pointer'
+          }}
+        >
+          Beli 100 Koin (Rp15.000)
+        </button>
+      </div>
     </div>
   );
 }
