@@ -127,3 +127,33 @@
   height: 150px; /* Atur sesuai tinggi container */
   width: 100%;
 }
+
+.loading-box{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  margin-top:20px;
+}
+
+.spinner{
+  width:42px;
+  height:42px;
+  border:4px solid rgba(255,255,255,0.2);
+  border-top:4px solid #ffffff;
+  border-radius:50%;
+  animation:spin 1s linear infinite;
+}
+
+@keyframes spin{
+
+  from{
+    transform:rotate(0deg);
+  }
+
+  to{
+    transform:rotate(360deg);
+  }
+
+}
