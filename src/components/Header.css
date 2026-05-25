@@ -73,12 +73,11 @@
 }
 
 .coin-icon{
-  width:15px;
-  height:15px;
+  width:18px;
+  height:18px;
   object-fit:contain;
   display:inline-flex;
   vertical-align:middle;
-  margin-bottom:10px;
 }
 
 .plus-icon{
@@ -104,7 +103,7 @@
   background:none;
   cursor:pointer;
   padding:0;
-  height:28px;
+  height:32px;
 }
 
 .profile-dropdown{
@@ -155,7 +154,7 @@
   border:none;
   background:none;
   cursor:pointer;
-  padding-left:8px;
+  padding-left:4px;
   height:34px;
   transition:0.2s;
 }
@@ -180,8 +179,8 @@ body{
 
 
 .profile-icon{
-  width:30px;
-  height:30px;
+  width:35px;
+  height:35px;
   object-fit:contain;
   display:block;
 }
