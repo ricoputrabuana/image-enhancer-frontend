@@ -21,7 +21,7 @@ function EnhancerBox({ user, userData, onCoinUpdate }) {
   };
 
 const handleEnhance = async () => {
-  
+
   if (!user) {
     navigate('/login');
     return;
@@ -34,57 +34,47 @@ const handleEnhance = async () => {
 
   if (!selectedFile) return;
 
-  const formData = new FormData();
-  formData.append('files', selectedFile);
-
   try {
 
-    // 1. upload file ke gradio
-    const uploadRes = await axios.post(
-      'https://ricoputra1708-image-enhancer.hf.space/gradio_api/upload',
-      formData
+    const client =
+      await Client.connect(
+        "ricoputra1708/image-enhancer"
+      );
+
+    const result =
+      await client.predict(
+        "/enhance_image",
+        {
+          img: selectedFile
+        }
+      );
+
+    console.log(result);
+
+    const outputImage =
+      result.data[0];
+
+    setEnhanced(outputImage.url);
+
+    const newCoins =
+      userData.coins - 1;
+
+    const userRef =
+      doc(db,'users',user.uid);
+
+    await updateDoc(
+      userRef,
+      { coins:newCoins }
     );
-
-    const uploadedPath = uploadRes.data[0];
-
-    // 2. panggil inference api
-    const predictRes = await axios.post(
-      'https://ricoputra1708-image-enhancer.hf.space/gradio_api/call/enhance_image',
-      {
-        data: [uploadedPath]
-      }
-    );
-
-    console.log("PREDICT RESPONSE:", predictRes.data);
-
-    const eventId = predictRes.data.event_id;
-
-    // 3. ambil hasil
-    const resultRes = await axios.get(
-      `https://ricoputra1708-image-enhancer.hf.space/gradio_api/call/enhance_image/${eventId}`
-    );
-
-    console.log("RESULT RESPONSE:", resultRes.data);
-
-    const resultImage = resultRes.data.output.data[0];
-
-    setEnhanced(resultImage);
-
-    // kurangi coin
-    const newCoins = userData.coins - 1;
-    const userRef = doc(db, 'users', user.uid);
-
-    await updateDoc(userRef, {
-      coins: newCoins
-    });
 
     onCoinUpdate(newCoins);
 
-  } catch (err) {
+  }
+  catch(err){
 
     console.error(err);
 
-    alert('Enhance failed');
+    alert("Enhance failed");
   }
 };
 
