@@ -1,229 +1,136 @@
+// src/components/Header.js
+
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import './EnhancerBox.css';
-import { doc, updateDoc } from 'firebase/firestore';
-import { db } from '../firebase';
-import { Client } from "@gradio/client";
+import { Link } from 'react-router-dom';
+import './Header.css';
 
-function EnhancerBox({ user, userData, onCoinUpdate }) {
+function Header({ userData, onLogout }) {
 
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [preview, setPreview] = useState(null);
-  const [enhanced, setEnhanced] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-
-  const navigate = useNavigate();
-
-  const handleChoose = (e) => {
-    const file = e.target.files[0];
-
-    if(file){
-      setSelectedFile(file);
-      setPreview(URL.createObjectURL(file));
-      setEnhanced(null);
-    }
-  };
-
-  const handleEnhance = async () => {
-
-    if(!user){
-      navigate('/login');
-      return;
-    }
-
-    if(userData?.coins <= 0){
-      alert('Koin kamu habis.');
-      return;
-    }
-
-    if(!selectedFile) return;
-
-    setIsLoading(true);
-
-    try{
-
-      const client =
-        await Client.connect(
-          "ricoputra1708/image-enhancer"
-        );
-
-      const result =
-        await client.predict(
-          "/enhance_image",
-          {
-            img:selectedFile
-          }
-        );
-
-      const outputImage =
-        result.data[0];
-
-      setEnhanced(outputImage.url);
-
-      const newCoins =
-        userData.coins - 1;
-
-      const userRef =
-        doc(db,'users',user.uid);
-
-      await updateDoc(
-        userRef,
-        { coins:newCoins }
-      );
-
-      onCoinUpdate(newCoins);
-
-    }
-    catch(err){
-
-      console.error(err);
-      alert("Enhance failed");
-
-    }
-    finally{
-
-      setIsLoading(false);
-
-    }
-  };
-
-  const handleRemove = () => {
-
-    setSelectedFile(null);
-    setPreview(null);
-    setEnhanced(null);
-
-  };
+  const [menuOpen,setMenuOpen] = useState(false);
 
   return (
-    <div className="enhancer-box">
+    <header className="header">
 
-      <h3 className="title">
-        Enhance Image Quality
-      </h3>
+      <div className="left-group">
 
-      {!preview ? (
-
-        <div className="center-upload-area">
-
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleChoose}
-            id="upload-input"
-            style={{display:'none'}}
-          />
-
-          <button
-            className="upload-button"
-            onClick={()=>
-              document
-                .getElementById('upload-input')
-                .click()
-            }
-          >
-            Upload Image
-          </button>
-
+        <div className="logo">
+          🔔 Bell
         </div>
 
-      ) : (
+        <nav className="nav-links">
+          <a href="#pricing">Pricing</a>
+        </nav>
 
-        <div className="enhancer-content show-divider">
+      </div>
 
-          <div className="input-section">
+      <div className="auth-links">
 
-            <img
-              src={preview}
-              alt="Preview"
-              className="preview-img"
-            />
+        {!userData ? (
 
-            <div className="action-buttons">
+          <Link
+            to="/login"
+            className="auth-button"
+          >
+            Sign Up / Login
+          </Link>
 
-              <button onClick={handleRemove}>
-                Remove
-              </button>
+        ) : (
+
+          <>
+
+            {/* Coins */}
+
+            <Link
+              to="/buy-coins"
+              className="coin-box"
+            >
+
+              <span className="coin-count">
+
+                {userData.coins}
+
+                <img
+                  src="/assets/coin.png"
+                  alt="coin"
+                  className="coin-icon"
+                />
+
+              </span>
+
+              <span className="plus-icon">
+                +
+              </span>
+
+            </Link>
+
+            {/* Profile */}
+
+            <div className="profile-wrapper">
 
               <button
-                onClick={handleEnhance}
-                disabled={isLoading}
+                className="profile-btn"
+                onClick={()=>
+                  setMenuOpen(!menuOpen)
+                }
               >
+                👤 ▼
+              </button>
 
-                {isLoading ? (
+              {menuOpen && (
 
-                  "Enhancing..."
+                <div className="profile-dropdown">
 
-                ) : (
+                  <div className="profile-name">
+                    {userData.name}
+                  </div>
 
-                  <>
-                    Enhance 1{' '}
+                  <div className="profile-email">
+                    {userData.email}
+                  </div>
+
+                  <hr />
+
+                  <div className="dropdown-item">
+
+                    Coins :
+                    {' '}
+                    {userData.coins}
+
                     <img
                       src="/assets/coin.png"
                       alt="coin"
-                      style={{
-                        width:'16px',
-                        height:'16px',
-                        verticalAlign:'middle',
-                        marginLeft:'4px'
-                      }}
+                      className="coin-icon"
                     />
-                  </>
 
-                )}
+                  </div>
 
-              </button>
+                  <div className="dropdown-item">
+                    History Images
+                  </div>
+
+                </div>
+
+              )}
 
             </div>
 
-          </div>
+            {/* Logout */}
 
-          <div className="divider"></div>
+            <button
+              onClick={onLogout}
+              className="logout-btn"
+            >
+              🚪
+            </button>
 
-          <div className="output-section">
+          </>
 
-            {isLoading && (
+        )}
 
-              <div className="loading-box">
+      </div>
 
-                <div className="spinner"></div>
-
-                <p>
-                  Enhancing image...
-                </p>
-
-              </div>
-
-            )}
-
-            {!isLoading && enhanced && (
-
-              <>
-                <img
-                  src={enhanced}
-                  alt="Enhanced"
-                  className="enhanced-img"
-                />
-
-                <a href={enhanced} download>
-
-                  <button className="download-button">
-                    Download
-                  </button>
-
-                </a>
-              </>
-
-            )}
-
-          </div>
-
-        </div>
-
-      )}
-
-    </div>
+    </header>
   );
 }
 
-export default EnhancerBox;
+export default Header;
