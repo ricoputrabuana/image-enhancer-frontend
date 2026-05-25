@@ -64,12 +64,16 @@
 .coin-count{
   display:flex;
   align-items:center;
-  gap:4px;
+  gap:6px;
+  line-height:1;
 }
 
 .coin-icon{
   width:16px;
   height:16px;
+  object-fit:contain;
+  vertical-align:middle;
+  display:block;
 }
 
 .plus-icon{
@@ -90,12 +94,12 @@
 .profile-btn{
   display:flex;
   align-items:center;
-  gap:6px;
+  gap:8px;
   border:none;
   background:none;
   cursor:pointer;
   padding:0;
-  height:28px;
+  height:34px;
 }
 
 .profile-dropdown{
@@ -140,7 +144,7 @@
   background:none;
   cursor:pointer;
   padding:0;
-  height:28px;
+  height:34px;
   transition:0.2s;
 }
 
@@ -164,8 +168,8 @@ body{
 
 .profile-icon,
 .logout-icon{
-  width:20px;
-  height:20px;
+  width:26px;
+  height:26px;
   object-fit:contain;
   display:block;
 }
@@ -175,5 +179,5 @@ body{
   line-height:1;
   display:flex;
   align-items:center;
-  margin-top:1px;
+  margin-top:2px;
 }
