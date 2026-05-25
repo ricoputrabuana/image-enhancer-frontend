@@ -18,7 +18,7 @@ function Header({ userData, onLogout }) {
         </div>
 
         <nav className="nav-links">
-          <a href="#pricing">Pricing</a>
+          <a href="/buy-coins">Pricing</a>
         </nav>
 
       </div>
