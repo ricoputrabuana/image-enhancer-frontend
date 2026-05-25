@@ -20,6 +20,7 @@ function EnhancerBox({ user, userData, onCoinUpdate }) {
   };
 
 const handleEnhance = async () => {
+  
   if (!user) {
     navigate('/login');
     return;
@@ -53,7 +54,7 @@ const handleEnhance = async () => {
       }
     );
 
-    console.log(predictRes.data);
+    console.log("PREDICT RESPONSE:", predictRes.data);
 
     const eventId = predictRes.data.event_id;
 
@@ -62,7 +63,7 @@ const handleEnhance = async () => {
       `https://ricoputra1708-image-enhancer.hf.space/gradio_api/call/enhance_image/${eventId}`
     );
 
-    console.log(resultRes.data);
+    console.log("RESULT RESPONSE:", resultRes.data);
 
     const resultImage = resultRes.data.output.data[0];
 
