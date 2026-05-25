@@ -9,6 +9,7 @@ function EnhancerBox({ user, userData, onCoinUpdate }) {
   const [selectedFile, setSelectedFile] = useState(null);
   const [preview, setPreview] = useState(null);
   const [enhanced, setEnhanced] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleChoose = (e) => {
@@ -32,6 +33,11 @@ const handleEnhance = async () => {
   }
 
   if (!selectedFile) return;
+
+  setIsLoading(true);
+
+  const formData = new FormData();
+  formData.append('files', selectedFile);
 
   try {
 
