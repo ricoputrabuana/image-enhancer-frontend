@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import './EnhancerBox.css';
 import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '../firebase';
+import { Client } from "@gradio/client";
 
 function EnhancerBox({ user, userData, onCoinUpdate }) {
   const [selectedFile, setSelectedFile] = useState(null);
