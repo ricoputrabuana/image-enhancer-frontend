@@ -32,39 +32,36 @@ const handleEnhance = async () => {
 
   if (!selectedFile) return;
 
-  const reader = new FileReader();
-  reader.readAsDataURL(selectedFile);
+  const formData = new FormData();
+  formData.append('image', selectedFile);
 
-  reader.onloadend = async () => {
-    const base64Image = reader.result;
+  try {
+    const res = await axios.post(
+      'https://ricoputra1708-image-enhancer.hf.space/upload',
+      formData,
+      {
+        responseType: 'blob'
+      }
+    );
 
-    try {
-      const res = await axios.post(
-        'https://ricoputra1708-image-enhancer.hf.space/predict',
-        {
-          data: [base64Image]
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        }
-      );
+    const imageURL = URL.createObjectURL(res.data);
+    setEnhanced(imageURL);
 
-      console.log("[SUCCESS] Response from proxy:", res.data);
+    const newCoins = userData.coins - 1;
+    const userRef = doc(db, 'users', user.uid);
 
-      const resultBase64 = res.data.data[0];
-      setEnhanced(resultBase64);
+    await updateDoc(userRef, { coins: newCoins });
 
-      const newCoins = userData.coins - 1;
-      const userRef = doc(db, 'users', user.uid);
-      await updateDoc(userRef, { coins: newCoins });
-      onCoinUpdate(newCoins);
-    } catch (err) {
-      alert('Enhance failed');
-      console.error('Enhance failed:', err?.response || err.message || err);
-    }
-  };
+    onCoinUpdate(newCoins);
+
+  } catch (err) {
+    alert('Enhance failed');
+
+    console.error(
+      'Enhance failed:',
+      err?.response || err.message || err
+    );
+  }
 };
 
 
