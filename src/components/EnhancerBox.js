@@ -26,41 +26,63 @@ const handleEnhance = async () => {
   }
 
   if (userData?.coins <= 0) {
-    alert('Koin kamu habis. Silakan isi ulang.');
+    alert('Koin kamu habis.');
     return;
   }
 
   if (!selectedFile) return;
 
   const formData = new FormData();
-  formData.append('image', selectedFile);
+  formData.append('files', selectedFile);
 
   try {
-    const res = await axios.post(
-      'https://ricoputra1708-image-enhancer.hf.space/upload',
-      formData,
+
+    // 1. upload file ke gradio
+    const uploadRes = await axios.post(
+      'https://ricoputra1708-image-enhancer.hf.space/gradio_api/upload',
+      formData
+    );
+
+    const uploadedPath = uploadRes.data[0];
+
+    // 2. panggil inference api
+    const predictRes = await axios.post(
+      'https://ricoputra1708-image-enhancer.hf.space/gradio_api/call/enhance_image',
       {
-        responseType: 'blob'
+        data: [uploadedPath]
       }
     );
 
-    const imageURL = URL.createObjectURL(res.data);
-    setEnhanced(imageURL);
+    console.log(predictRes.data);
 
+    const eventId = predictRes.data.event_id;
+
+    // 3. ambil hasil
+    const resultRes = await axios.get(
+      `https://ricoputra1708-image-enhancer.hf.space/gradio_api/call/enhance_image/${eventId}`
+    );
+
+    console.log(resultRes.data);
+
+    const resultImage = resultRes.data.output.data[0];
+
+    setEnhanced(resultImage);
+
+    // kurangi coin
     const newCoins = userData.coins - 1;
     const userRef = doc(db, 'users', user.uid);
 
-    await updateDoc(userRef, { coins: newCoins });
+    await updateDoc(userRef, {
+      coins: newCoins
+    });
 
     onCoinUpdate(newCoins);
 
   } catch (err) {
-    alert('Enhance failed');
 
-    console.error(
-      'Enhance failed:',
-      err?.response || err.message || err
-    );
+    console.error(err);
+
+    alert('Enhance failed');
   }
 };
 
