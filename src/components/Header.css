@@ -103,7 +103,7 @@
   background:none;
   cursor:pointer;
   padding:0;
-  height:32px;
+  height:30px;
 }
 
 .profile-dropdown{
@@ -155,7 +155,7 @@
   background:none;
   cursor:pointer;
   padding-left:4px;
-  height:34px;
+  height:30px;
   transition:0.2s;
 }
 
@@ -179,15 +179,15 @@ body{
 
 
 .profile-icon{
-  width:33px;
-  height:33px;
+  width:30px;
+  height:30px;
   object-fit:contain;
   display:block;
 }
 
 .logout-icon{
-  width:35px;
-  height:35px;
+  width:30px;
+  height:30px;
   object-fit:contain;
   display:block;
 }
