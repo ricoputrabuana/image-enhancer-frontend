@@ -207,3 +207,20 @@ body{
   margin:0;
   overflow-x:hidden;
 }
+
+.profile-icon,
+.logout-icon{
+
+  width:24px;
+  height:24px;
+
+  object-fit:contain;
+}
+
+.profile-btn,
+.logout-btn{
+
+  background:none;
+  border:none;
+  cursor:pointer;
+}
