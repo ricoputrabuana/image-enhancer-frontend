@@ -104,7 +104,7 @@
   background:none;
   cursor:pointer;
   padding:0;
-  height:30px;
+  height:28px;
 }
 
 .profile-dropdown{
@@ -176,8 +176,8 @@ body{
 
 
 .profile-icon{
-  width:32px;
-  height:32px;
+  width:30px;
+  height:30px;
   object-fit:contain;
   display:block;
 }
@@ -190,7 +190,7 @@ body{
 }
 
 .dropdown-arrow{
-  font-size:13px;
+  font-size:10px;
   display:flex;
   align-items:center;
   justify-content:center;
