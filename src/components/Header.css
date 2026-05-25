@@ -151,7 +151,7 @@
   border:none;
   background:none;
   cursor:pointer;
-  padding-left:18px;
+  padding-left:15px;
   height:34px;
   transition:0.2s;
 }
@@ -175,7 +175,13 @@ body{
 }
 
 
-.profile-icon,
+.profile-icon{
+  width:32px;
+  height:32px;
+  object-fit:contain;
+  display:block;
+}
+
 .logout-icon{
   width:35px;
   height:35px;
