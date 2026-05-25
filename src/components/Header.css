@@ -4,20 +4,13 @@
   display:flex;
   justify-content:space-between;
   align-items:center;
-
   padding:0 24px;
-
   background:#fff;
-
   box-shadow:0 2px 8px rgba(0,0,0,0.1);
-
   position:fixed;
-
   top:0;
   left:0;
-
   z-index:999;
-
   box-sizing:border-box;
 }
 
@@ -51,26 +44,16 @@
   gap:14px;
 }
 
-/* ---------- coin box ---------- */
-
 .coin-box{
-
   display:flex;
   align-items:center;
   gap:10px;
-
   text-decoration:none;
-
   background:#f4f4f4;
-
   padding:8px 14px;
-
   border-radius:10px;
-
   color:#111;
-
   font-weight:600;
-
   transition:0.2s;
 }
 
@@ -105,60 +88,43 @@
 }
 
 .profile-btn{
-
+  display:flex;
+  align-items:center;
+  gap:6px;
   border:none;
-
   background:none;
-
-  font-size:20px;
-
   cursor:pointer;
+  padding:0;
+  height:28px;
 }
 
 .profile-dropdown{
-
   position:absolute;
-
   right:0;
-
   top:55px;
-
   width:260px;
-
   background:white;
-
   border-radius:12px;
-
   box-shadow:
     0 8px 20px rgba(0,0,0,0.12);
-
   padding:18px;
-
   z-index:1000;
 }
 
 .profile-name{
-
   font-weight:bold;
-
   margin-bottom:8px;
 }
 
 .profile-email{
-
   color:#666;
-
   font-size:14px;
-
   word-break:break-word;
-
   margin-bottom:12px;
 }
 
 .dropdown-item{
-
   margin-top:12px;
-
   cursor:pointer;
 }
 
@@ -166,40 +132,28 @@
   color:#5EABD6;
 }
 
-/* ---------- logout ---------- */
-
 .logout-btn{
-
+  display:flex;
+  align-items:center;
+  justify-content:center;
   border:none;
-
   background:none;
-
-  font-size:22px;
-
   cursor:pointer;
-
+  padding:0;
+  height:28px;
   transition:0.2s;
 }
 
 .logout-btn:hover{
-
   transform:scale(1.12);
 }
 
-/* ---------- login button ---------- */
-
 .auth-button{
-
   padding:8px 14px;
-
   background:#5EABD6;
-
   color:white;
-
   text-decoration:none;
-
   border-radius:8px;
-
   font-weight:bold;
 }
 
@@ -210,17 +164,16 @@ body{
 
 .profile-icon,
 .logout-icon{
-
-  width:24px;
-  height:24px;
-
+  width:20px;
+  height:20px;
   object-fit:contain;
+  display:block;
 }
 
-.profile-btn,
-.logout-btn{
-
-  background:none;
-  border:none;
-  cursor:pointer;
+.dropdown-arrow{
+  font-size:12px;
+  line-height:1;
+  display:flex;
+  align-items:center;
+  margin-top:1px;
 }
