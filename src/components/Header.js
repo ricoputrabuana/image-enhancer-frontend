@@ -74,7 +74,7 @@ function Header({ userData, onLogout }) {
                 }
               >
                 <img
-                  src="/assets/user.png"
+                  src="/assets/account.png"
                   alt="profile"
                   className="profile-icon"
                 /> ▼
