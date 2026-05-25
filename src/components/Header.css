@@ -94,7 +94,7 @@
 .profile-btn{
   display:flex;
   align-items:center;
-  gap:8px;
+  gap:4px;
   border:none;
   background:none;
   cursor:pointer;
@@ -168,8 +168,8 @@ body{
 
 .profile-icon,
 .logout-icon{
-  width:26px;
-  height:26px;
+  width:35px;
+  height:35px;
   object-fit:contain;
   display:block;
 }
