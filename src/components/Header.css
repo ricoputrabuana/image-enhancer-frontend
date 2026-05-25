@@ -73,12 +73,12 @@
 }
 
 .coin-icon{
-  width:14px;
-  height:14px;
+  width:15px;
+  height:15px;
   object-fit:contain;
   display:inline-flex;
   vertical-align:middle;
-  margin-bottom:1px;
+  margin-bottom:10px;
 }
 
 .plus-icon{
@@ -155,7 +155,7 @@
   border:none;
   background:none;
   cursor:pointer;
-  padding-left:12px;
+  padding-left:8px;
   height:34px;
   transition:0.2s;
 }
