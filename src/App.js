@@ -101,21 +101,7 @@ function App() {
 
   if(authLoading){
 
-    return(
-
-      <div
-        style={{
-          display:'flex',
-          justifyContent:'center',
-          alignItems:'center',
-          height:'100vh',
-          fontSize:'22px'
-        }}
-      >
-        Loading...
-      </div>
-
-    );
+    return null;
 
   }
 
