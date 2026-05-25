@@ -21,5 +21,5 @@ function HomePage({ user, userData, setUserData }) {
 
     </div>
   );
-
+}
 export default HomePage;
