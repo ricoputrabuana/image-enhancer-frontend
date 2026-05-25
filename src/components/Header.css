@@ -73,8 +73,8 @@
 }
 
 .coin-icon{
-  width:18px;
-  height:18px;
+  width:16px;
+  height:16px;
   object-fit:contain;
   display:inline-flex;
   vertical-align:middle;
@@ -87,7 +87,7 @@
   font-size:18px;
   font-weight:bold;
   color:#5EABD6;
-  line-height:1;
+  line-height:4;
 }
 
 .profile-wrapper{
@@ -179,8 +179,8 @@ body{
 
 
 .profile-icon{
-  width:35px;
-  height:35px;
+  width:33px;
+  height:33px;
   object-fit:contain;
   display:block;
 }
@@ -202,8 +202,8 @@ body{
 }
 
 .dropdown-coin-icon{
-  width:14px;
-  height:14px;
+  width:16px;
+  height:16px;
   object-fit:contain;
 }
 
