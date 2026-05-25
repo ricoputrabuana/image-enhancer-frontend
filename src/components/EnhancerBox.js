@@ -91,7 +91,7 @@ const handleEnhance = async () => {
   const handleRemove = () => {
     setSelectedFile(null);
     setPreview(null);
-    setd(null);
+    setEnhanced(null);
   };
 
   return (
@@ -121,7 +121,7 @@ const handleEnhance = async () => {
             <div className="action-buttons">
               <button onClick={handleRemove}>Remove</button>
               <button 
-                onClick={handle}
+                onClick={handleEnhance}
                 disabled={isLoading}
               >
                 {isLoading ? (
