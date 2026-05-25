@@ -1,9 +1,11 @@
 // src/App.js
+
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { auth, db } from './firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
+
 import Header from './components/Header';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
@@ -12,67 +14,163 @@ import BuyCoinsPage from './pages/BuyCoinsPage';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
-  const [user, setUser] = useState(null);         // Firebase Auth user
-  const [userData, setUserData] = useState(null); // Firestore user profile (dengan koin, dll)
+
+  const [user, setUser] = useState(null);
+
+  const [userData, setUserData] = useState(null);
+
+  const [authLoading, setAuthLoading] =
+    useState(true);
 
   const handleLogout = async () => {
+
     await auth.signOut();
+
     setUser(null);
+
     setUserData(null);
+
   };
 
   useEffect(() => {
-  
+
     const unsubscribe =
-      onAuthStateChanged(auth, async(currentUser)=>{
-  
-        if(currentUser){
-  
-          setUser(currentUser);
-  
-          const ref = doc(db,'users',currentUser.uid);
-          const snap = await getDoc(ref);
-  
-          if(snap.exists()){
-  
-            setUserData(snap.data());
-  
-          }else{
-  
-            setUserData({
-              name: currentUser.displayName,
-              email: currentUser.email,
-              coins:0
-            });
-  
+      onAuthStateChanged(
+        auth,
+        async(currentUser)=>{
+
+          try{
+
+            if(currentUser){
+
+              setUser(currentUser);
+
+              const ref =
+                doc(
+                  db,
+                  'users',
+                  currentUser.uid
+                );
+
+              const snap =
+                await getDoc(ref);
+
+              if(snap.exists()){
+
+                setUserData(
+                  snap.data()
+                );
+
+              }else{
+
+                setUserData({
+
+                  name:
+                    currentUser.displayName,
+
+                  email:
+                    currentUser.email,
+
+                  coins:0
+
+                });
+
+              }
+
+            }else{
+
+              setUser(null);
+
+              setUserData(null);
+
+            }
+
           }
-  
-        }else{
-  
-          setUser(null);
-          setUserData(null);
-  
+          finally{
+
+            setAuthLoading(false);
+
+          }
+
         }
-  
-      });
-  
+      );
+
     return () => unsubscribe();
-  
+
   },[]);
 
-  return (
-    <Router>
-      <Header userData={userData} onLogout={handleLogout} />
+  if(authLoading){
 
-      <div style={{ padding: '2rem', paddingTop: '80px' }}>
+    return(
+
+      <div
+        style={{
+          display:'flex',
+          justifyContent:'center',
+          alignItems:'center',
+          height:'100vh',
+          fontSize:'22px'
+        }}
+      >
+        Loading...
+      </div>
+
+    );
+
+  }
+
+  return (
+
+    <Router>
+
+      <Header
+        userData={userData}
+        onLogout={handleLogout}
+      />
+
+      <div
+        style={{
+          padding:'2rem',
+          paddingTop:'80px'
+        }}
+      >
+
         <Routes>
-          <Route path="/login" element={<LoginPage onAuth={setUser} />} />
-          <Route path="/signup" element={<SignupPage onAuth={setUser} />} />
-          <Route path="/buy-coins" element={<BuyCoinsPage user={user} userData={userData} />} />
+
+          <Route
+            path="/login"
+            element={
+              <LoginPage
+                onAuth={setUser}
+              />
+            }
+          />
+
+          <Route
+            path="/signup"
+            element={
+              <SignupPage
+                onAuth={setUser}
+              />
+            }
+          />
+
+          <Route
+            path="/buy-coins"
+            element={
+              <BuyCoinsPage
+                user={user}
+                userData={userData}
+              />
+            }
+          />
+
           <Route
             path="/"
             element={
-              <ProtectedRoute user={user}>
+              <ProtectedRoute
+                user={user}
+              >
                 <HomePage
                   user={user}
                   userData={userData}
@@ -81,10 +179,15 @@ function App() {
               </ProtectedRoute>
             }
           />
+
         </Routes>
+
       </div>
+
     </Router>
+
   );
+
 }
 
 export default App;
