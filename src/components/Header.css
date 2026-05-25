@@ -73,8 +73,8 @@
 }
 
 .coin-icon{
-  width:18px;
-  height:18px;
+  width:14px;
+  height:14px;
   object-fit:contain;
   display:inline-flex;
   vertical-align:middle;
@@ -140,7 +140,11 @@
   cursor:pointer;
 }
 
-.dropdown-item:hover{
+.history-link{
+  cursor:pointer;
+}
+
+.history-link:hover{
   color:#5EABD6;
 }
 
@@ -196,4 +200,28 @@ body{
   justify-content:center;
   line-height:1;
   transform:translateY(1px);
+}
+
+.dropdown-coin-icon{
+  width:14px;
+  height:14px;
+  object-fit:contain;
+}
+
+.dropdown-plus{
+  text-decoration:none;
+  color:#5EABD6;
+  font-size:18px;
+  font-weight:bold;
+  line-height:1;
+  display:flex;
+  align-items:center;
+}
+
+.dropdown-plus:hover{
+  color:#2d7cff;
+}
+
+.no-hover{
+  cursor:default;
 }
