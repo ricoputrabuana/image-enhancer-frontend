@@ -78,6 +78,7 @@
   object-fit:contain;
   display:inline-flex;
   vertical-align:middle;
+  margin-bottom:-2px;
 }
 
 .plus-icon{
@@ -87,7 +88,8 @@
   font-size:18px;
   font-weight:bold;
   color:#5EABD6;
-  line-height:4;
+  line-height:1;
+  margin-bottom:2px;
 }
 
 .profile-wrapper{
