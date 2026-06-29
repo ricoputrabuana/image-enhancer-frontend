@@ -41,39 +41,22 @@ function EnhancerBox({ user, userData, onCoinUpdate }) {
 
     try{
 
-      const HF_URL = "https://ricoputra1708-image-enhancer.hf.space";
-
-      // Step 1: Upload file ke HF Space
       const formData = new FormData();
-      formData.append("files", selectedFile);
+      formData.append('image', selectedFile);
 
-      const uploadRes = await fetch(`${HF_URL}/upload`, {
-        method: "POST",
+      const res = await fetch('/api/enhance', {
+        method: 'POST',
         body: formData,
       });
 
-      if(!uploadRes.ok) throw new Error("Upload gagal");
+      if(!res.ok) throw new Error("Enhance gagal");
 
-      const uploadData = await uploadRes.json();
-      const filePath = uploadData[0]; // path file di server HF
+      const data = await res.json();
 
-      // Step 2: Panggil endpoint predict
-      const predictRes = await fetch(`${HF_URL}/run/enhance_image`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          data: [{ path: filePath }],
-        }),
-      });
+      if(data.error) throw new Error(data.error);
 
-      if(!predictRes.ok) throw new Error("Predict gagal");
+      setEnhanced(data.url);
 
-      const predictData = await predictRes.json();
-      const outputUrl = predictData.data[0].url;
-
-      setEnhanced(outputUrl);
-
-      // Kurangi koin
       const newCoins = userData.coins - 1;
       const userRef = doc(db, 'users', user.uid);
       await updateDoc(userRef, { coins: newCoins });
