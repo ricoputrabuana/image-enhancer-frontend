@@ -39,6 +39,7 @@ export default async function handler(req, res) {
 
     const uploadData = await uploadRes.json();
     const filePath = uploadData[0];
+    console.log('upload ok, filePath:', filePath);
 
     // Step 2: Queue join
     const joinRes = await fetch(`${HF_URL}/gradio_api/queue/join`, {
@@ -59,9 +60,9 @@ export default async function handler(req, res) {
 
     if (!joinRes.ok) throw new Error(`Queue join gagal: ${joinRes.status}`);
     const joinData = await joinRes.json();
-    const event_id = joinData.event_id;
+    console.log('join ok, event_id:', joinData.event_id);
 
-    // Step 3: Baca SSE stream sampai process_completed
+    // Step 3: Baca SSE stream
     const sseRes = await fetch(
       `${HF_URL}/gradio_api/queue/data?session_hash=${session_hash}`,
       { headers: { Accept: 'text/event-stream' } }
@@ -70,12 +71,12 @@ export default async function handler(req, res) {
     if (!sseRes.ok) throw new Error(`SSE gagal: ${sseRes.status}`);
 
     let outputUrl = null;
-    let buffer2 = '';
+    let sseBuffer = '';
 
     for await (const chunk of sseRes.body) {
-      buffer2 += new TextDecoder().decode(chunk);
-      const parts = buffer2.split('\n\n');
-      buffer2 = parts.pop();
+      sseBuffer += new TextDecoder().decode(chunk);
+      const parts = sseBuffer.split('\n\n');
+      sseBuffer = parts.pop();
 
       for (const part of parts) {
         const dataLine = part.split('\n').find(l => l.startsWith('data:'));
@@ -83,26 +84,41 @@ export default async function handler(req, res) {
 
         try {
           const json = JSON.parse(dataLine.slice(5));
-          console.log('SSE msg:', json.msg, 'event_id:', json.event_id);
 
-        if (json.msg === 'process_completed') {
-          console.log('output raw:', JSON.stringify(json.output));
-          const output = json.output?.data?.[0];
-          // Pakai url langsung kalau ada, kalau tidak build dari path
-          if (output?.url) {
-            outputUrl = output.url;
-          } else if (output?.path) {
-            outputUrl = `${HF_URL}/gradio_api/file=${output.path}`;
+          // Log SEMUA event lengkap
+          console.log('SSE full:', JSON.stringify(json));
+
+          if (json.msg === 'process_completed') {
+            const rawOutput = json.output;
+            console.log('raw output:', JSON.stringify(rawOutput));
+
+            // Coba semua kemungkinan struktur output
+            const data = rawOutput?.data;
+            if (Array.isArray(data) && data.length > 0) {
+              const output = data[0];
+              console.log('output[0]:', JSON.stringify(output));
+              if (typeof output === 'string') {
+                outputUrl = output;
+              } else if (output?.url) {
+                outputUrl = output.url;
+              } else if (output?.path) {
+                outputUrl = `${HF_URL}/gradio_api/file=${output.path}`;
+              }
+            }
+            break;
           }
-          break;
-        }
+
+          if (json.msg === 'close_stream') break;
+
         } catch(e) {
-          console.log('parse error:', e.message);
+          console.log('parse error:', e.message, 'raw part:', part);
         }
       }
 
       if (outputUrl) break;
     }
+
+    console.log('final outputUrl:', outputUrl);
 
     if (!outputUrl) throw new Error('Tidak dapat hasil dari HF Space');
 
