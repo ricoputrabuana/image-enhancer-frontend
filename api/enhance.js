@@ -18,45 +18,36 @@ export default async function handler(req, res) {
 
     const contentType = req.headers['content-type'];
 
-    // Step 1: Upload ke HF Space
-    const uploadRes = await fetch(
-      'https://ricoputra1708-image-enhancer.hf.space/upload',
-      {
-        method: 'POST',
-        body: buffer,
-        headers: {
-          'Content-Type': contentType,
-        },
-      }
-    );
+    // Konversi buffer ke base64
+    const base64 = buffer.toString('base64');
+    const mime = contentType.split(';')[0].split('boundary=')[0].trim();
 
-    if (!uploadRes.ok) {
-      const text = await uploadRes.text();
-      throw new Error(`Upload HF gagal ${uploadRes.status}: ${text}`);
-    }
-
-    const uploadData = await uploadRes.json();
-    const filePath = uploadData[0];
-
-    // Step 2: Predict
+    // Gradio versi lama: kirim base64 langsung ke /api/predict
     const predictRes = await fetch(
-      'https://ricoputra1708-image-enhancer.hf.space/run/enhance_image',
+      'https://ricoputra1708-image-enhancer.hf.space/api/predict',
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          data: [{ path: filePath, meta: { _type: 'gradio.FileData' } }],
+          data: [`data:${mime};base64,${base64}`],
+          fn_index: 0,
         }),
       }
     );
 
     if (!predictRes.ok) {
       const text = await predictRes.text();
-      throw new Error(`Predict HF gagal ${predictRes.status}: ${text}`);
+      throw new Error(`Predict gagal ${predictRes.status}: ${text}`);
     }
 
     const predictData = await predictRes.json();
-    const outputUrl = `https://ricoputra1708-image-enhancer.hf.space/file=${predictData.data[0].path}`;
+    console.log('predict response:', JSON.stringify(predictData));
+
+    // Ambil URL output
+    const output = predictData.data[0];
+    const outputUrl = typeof output === 'string'
+      ? output
+      : output?.url || `https://ricoputra1708-image-enhancer.hf.space/file=${output?.path}`;
 
     res.status(200).json({ url: outputUrl });
 
