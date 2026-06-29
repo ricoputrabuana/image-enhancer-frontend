@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import './EnhancerBox.css';
 import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '../firebase';
-import { Client } from "@gradio/client";
 
 function EnhancerBox({ user, userData, onCoinUpdate }) {
 
@@ -42,42 +41,49 @@ function EnhancerBox({ user, userData, onCoinUpdate }) {
 
     try{
 
-      const client =
-        await Client.connect(
-          "https://ricoputra1708-image-enhancer.hf.space"
-        );
+      const HF_URL = "https://ricoputra1708-image-enhancer.hf.space";
 
-      const result =
-        await client.predict(
-          "/enhance_image",
-          {
-            img:selectedFile
-          }
-        );
+      // Step 1: Upload file ke HF Space
+      const formData = new FormData();
+      formData.append("files", selectedFile);
 
-      const outputImage =
-        result.data[0];
+      const uploadRes = await fetch(`${HF_URL}/upload`, {
+        method: "POST",
+        body: formData,
+      });
 
-      setEnhanced(outputImage.url);
+      if(!uploadRes.ok) throw new Error("Upload gagal");
 
-      const newCoins =
-        userData.coins - 1;
+      const uploadData = await uploadRes.json();
+      const filePath = uploadData[0]; // path file di server HF
 
-      const userRef =
-        doc(db,'users',user.uid);
+      // Step 2: Panggil endpoint predict
+      const predictRes = await fetch(`${HF_URL}/run/enhance_image`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          data: [{ path: filePath }],
+        }),
+      });
 
-      await updateDoc(
-        userRef,
-        { coins:newCoins }
-      );
+      if(!predictRes.ok) throw new Error("Predict gagal");
 
+      const predictData = await predictRes.json();
+      const outputUrl = predictData.data[0].url;
+
+      setEnhanced(outputUrl);
+
+      // Kurangi koin
+      const newCoins = userData.coins - 1;
+      const userRef = doc(db, 'users', user.uid);
+      await updateDoc(userRef, { coins: newCoins });
       onCoinUpdate(newCoins);
 
     }
     catch(err){
 
       console.error(err);
-      alert("Enhance failed");
+      alert("Enhance failed: " + err.message);
 
     }
     finally{
