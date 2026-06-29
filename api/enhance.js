@@ -85,11 +85,17 @@ export default async function handler(req, res) {
           const json = JSON.parse(dataLine.slice(5));
           console.log('SSE msg:', json.msg, 'event_id:', json.event_id);
 
-          if (json.msg === 'process_completed') {
-            const output = json.output?.data?.[0];
-            outputUrl = output?.url || `${HF_URL}/gradio_api/file=${output?.path}`;
-            break;
+        if (json.msg === 'process_completed') {
+          console.log('output raw:', JSON.stringify(json.output));
+          const output = json.output?.data?.[0];
+          // Pakai url langsung kalau ada, kalau tidak build dari path
+          if (output?.url) {
+            outputUrl = output.url;
+          } else if (output?.path) {
+            outputUrl = `${HF_URL}/gradio_api/file=${output.path}`;
           }
+          break;
+        }
         } catch(e) {
           console.log('parse error:', e.message);
         }
