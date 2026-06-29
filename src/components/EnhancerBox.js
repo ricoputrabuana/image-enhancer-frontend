@@ -44,7 +44,7 @@ function EnhancerBox({ user, userData, onCoinUpdate }) {
 
       const client =
         await Client.connect(
-          "ricoputra1708/image-enhancer"
+          "https://ricoputra1708-image-enhancer.hf.space"
         );
 
       const result =
