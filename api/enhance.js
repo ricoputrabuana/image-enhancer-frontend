@@ -1,7 +1,9 @@
 export const config = {
   api: {
     bodyParser: false,
+    responseLimit: false,
   },
+  maxDuration: 60,
 };
 
 export default async function handler(req, res) {
@@ -15,13 +17,12 @@ export default async function handler(req, res) {
     const chunks = [];
     for await (const chunk of req) chunks.push(chunk);
     const buffer = Buffer.concat(chunks);
-
     const contentType = req.headers['content-type'];
-    const HF_URL = 'https://ricoputra1708-image-enhancer.hf.space';
 
-    // Step 1: Upload ke /gradio_api/upload
-    const { FormData, Blob } = await import('node:buffer').catch(() => ({}));
-    
+    const HF_URL = 'https://ricoputra1708-image-enhancer.hf.space';
+    const session_hash = Math.random().toString(36).substring(2, 12);
+
+    // Step 1: Upload
     const form = new globalThis.FormData();
     const blob = new Blob([buffer], { type: contentType.split(';')[0] });
     form.append('files', blob, 'image.jpg');
@@ -39,7 +40,7 @@ export default async function handler(req, res) {
     const uploadData = await uploadRes.json();
     const filePath = uploadData[0];
 
-    // Step 2: Queue predict via /gradio_api/queue/join
+    // Step 2: Queue join
     const joinRes = await fetch(`${HF_URL}/gradio_api/queue/join`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -51,46 +52,47 @@ export default async function handler(req, res) {
           mime_type: 'image/jpeg',
         }],
         fn_index: 0,
+        session_hash,
         trigger_id: null,
-        session_hash: Math.random().toString(36).substring(2),
       }),
     });
 
-    if (!joinRes.ok) {
-      const text = await joinRes.text();
-      throw new Error(`Queue join gagal ${joinRes.status}: ${text}`);
-    }
-
+    if (!joinRes.ok) throw new Error(`Queue join gagal: ${joinRes.status}`);
     const joinData = await joinRes.json();
-    const eventId = joinData.event_id;
+    const event_id = joinData.event_id;
 
-    // Step 3: Listen SSE untuk hasil
-    const dataRes = await fetch(
-      `${HF_URL}/gradio_api/queue/data?session_hash=${joinData.session_hash || ''}`,
+    // Step 3: Baca SSE stream sampai process_completed
+    const sseRes = await fetch(
+      `${HF_URL}/gradio_api/queue/data?session_hash=${session_hash}`,
       { headers: { Accept: 'text/event-stream' } }
     );
 
-    const reader = dataRes.body.getReader();
-    const decoder = new TextDecoder();
+    if (!sseRes.ok) throw new Error(`SSE gagal: ${sseRes.status}`);
+
     let outputUrl = null;
+    let buffer2 = '';
 
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
+    for await (const chunk of sseRes.body) {
+      buffer2 += new TextDecoder().decode(chunk);
+      const parts = buffer2.split('\n\n');
+      buffer2 = parts.pop();
 
-      const text = decoder.decode(value);
-      const lines = text.split('\n');
+      for (const part of parts) {
+        const dataLine = part.split('\n').find(l => l.startsWith('data:'));
+        if (!dataLine) continue;
 
-      for (const line of lines) {
-        if (!line.startsWith('data:')) continue;
         try {
-          const json = JSON.parse(line.slice(5));
-          if (json.msg === 'process_completed' && json.event_id === eventId) {
+          const json = JSON.parse(dataLine.slice(5));
+          console.log('SSE msg:', json.msg, 'event_id:', json.event_id);
+
+          if (json.msg === 'process_completed') {
             const output = json.output?.data?.[0];
             outputUrl = output?.url || `${HF_URL}/gradio_api/file=${output?.path}`;
             break;
           }
-        } catch {}
+        } catch(e) {
+          console.log('parse error:', e.message);
+        }
       }
 
       if (outputUrl) break;
